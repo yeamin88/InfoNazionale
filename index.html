@@ -3,482 +3,233 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Infonazionale - Motore di Ricerca AI per la Scuola</title>
+  <title>Infonazionale - L.U.X. Gruppo SLL</title>
   <style>
-    :root {
-      --bg-color: #0d1117;
-      --card-bg: #161b22;
-      --border-color: #30363d;
-      --accent-color: #2f81f7;
-      --accent-hover: #1f6feb;
-      --text-main: #c9d1d9;
-      --text-heading: #f0f6fc;
-      --text-muted: #8b949e;
-      --danger-color: #f85149;
-      --success-color: #3fb950;
-    }
-
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
-
     body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #0b0f19;
+      color: #ffffff;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
-    }
-
-    header {
-      background-color: var(--card-bg);
-      border-bottom: 1px solid var(--border-color);
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
+      padding: 20px;
     }
-
-    .logo {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--text-heading);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    nav {
-      display: flex;
-      gap: 1rem;
-    }
-
-    nav a {
-      color: var(--text-main);
-      text-decoration: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      transition: background-color 0.2s;
-    }
-
-    nav a:hover, nav a.active {
-      background-color: var(--border-color);
-      color: var(--text-heading);
-    }
-
-    main {
-      flex: 1;
-      max-width: 1000px;
+    .card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 24px;
+      padding: 40px 30px;
+      max-width: 520px;
       width: 100%;
-      margin: 2rem auto;
-      padding: 0 1.5rem;
-    }
-
-    .page {
-      display: none;
-    }
-
-    .page.active {
-      display: block;
-    }
-
-    .search-header {
       text-align: center;
-      margin-bottom: 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
     }
-
-    .search-box {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .search-input-group {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .form-control {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      background-color: var(--bg-color);
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      color: var(--text-main);
-      font-size: 0.95rem;
-    }
-
-    .form-control:focus {
-      outline: none;
-      border-color: var(--accent-color);
-    }
-
-    .btn {
-      padding: 0.75rem 1.25rem;
-      font-size: 0.9rem;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 20px;
+      font-size: 0.85rem;
       font-weight: 600;
-      white-space: nowrap;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-
-    .btn-primary {
-      background-color: var(--accent-color);
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 12px;
       color: #ffffff;
     }
-
-    .btn-primary:hover {
-      background-color: var(--accent-hover);
-    }
-
-    .btn-secondary {
-      background-color: transparent;
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-    }
-
-    .btn-secondary:hover {
-      background-color: var(--border-color);
-    }
-
-    .response-box {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 1.5rem;
-      display: none;
+    p {
+      color: #9ca3af;
+      font-size: 1rem;
       line-height: 1.6;
-      white-space: pre-wrap;
+      margin-bottom: 28px;
     }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
+    .search-box {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
     }
-
-    .card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 1.5rem;
+    input[type="text"] {
+      flex: 1;
+      padding: 14px 18px;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 12px;
+      color: #ffffff;
+      font-size: 1rem;
+      outline: none;
     }
-
-    .form-container {
-      max-width: 500px;
-      margin: 2rem auto;
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 2rem;
+    input[type="text"]:focus {
+      border-color: #10b981;
     }
-
-    .form-group {
-      margin-bottom: 1.25rem;
+    .btn-search {
+      background: #10b981;
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 24px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease;
     }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-size: 0.875rem;
-      color: var(--text-heading);
+    .btn-search:hover {
+      background: #059669;
     }
-
-    .alert {
-      padding: 0.75rem 1rem;
-      border-radius: 6px;
-      font-size: 0.875rem;
-      margin-bottom: 1rem;
+    .result-area {
+      margin-top: 20px;
+      padding: 16px;
+      background: #1f2937;
+      border-radius: 12px;
+      color: #d1d5db;
+      font-size: 0.95rem;
       display: none;
-    }
-
-    .alert-danger {
-      background-color: rgba(248, 81, 73, 0.15);
-      color: var(--danger-color);
-      border: 1px solid rgba(248, 81, 73, 0.4);
-    }
-
-    .alert-success {
-      background-color: rgba(63, 185, 80, 0.15);
-      color: var(--success-color);
-      border: 1px solid rgba(63, 185, 80, 0.4);
-    }
-
-    footer {
-      border-top: 1px solid var(--border-color);
-      padding: 1.5rem;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      margin-top: auto;
+      text-align: left;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="logo">📚 Infonazionale</div>
-    <nav>
-      <a href="#home" id="nav-home" class="active">Ricerca AI</a>
-      <a href="#projects" id="nav-projects">Progetti HQ</a>
-      <a href="#contact" id="nav-contact">Contatti</a>
-      <a href="#admin" id="nav-admin">Admin</a>
-    </nav>
-  </header>
+  <div class="card">
+    <div class="badge">L.U.X. Gruppo SLL</div>
+    <h1>Infonazionale</h1>
+    <p>Motore di ricerca AI per la scuola. Poni una domanda e ottieni una risposta chiara e dettagliata.</p>
 
-  <main>
-    <!-- HOME / SEARCH PAGE -->
-    <section id="page-home" class="page active">
-      <div class="search-header">
-        <h1 style="color: var(--text-heading); margin-bottom: 0.5rem;">Motore di Ricerca AI per la Scuola</h1>
-        <p style="color: var(--text-muted);">Poni qualsiasi domanda di storia, letteratura, scienze o filosofia.</p>
-      </div>
+    <div class="search-box">
+      <input type="text" id="query-input" placeholder="Chiedi qualsiasi cosa per la scuola...">
+      <button class="btn-search" onclick="handleSearch()">Cerca</button>
+    </div>
 
-      <div class="search-box">
-        <form id="search-form">
-          <div class="search-input-group">
-            <input type="text" id="search-query" class="form-control" placeholder="Es. Spiega la Seconda Rivoluzione Industriale..." required>
-            <button type="submit" id="btn-search" class="btn btn-primary">🔍 Cerca con AI</button>
-          </div>
-        </form>
-      </div>
-
-      <div id="ai-response" class="response-box"></div>
-    </section>
-
-    <!-- PROGETTI HQ PAGE -->
-    <section id="page-projects" class="page">
-      <h1 style="color: var(--text-heading); margin-bottom: 0.5rem;">Progetti dall'HQ</h1>
-      <p style="color: var(--text-muted); margin-bottom: 2rem;">Sincronizzati in tempo reale con luxheadquarters.vercel.app</p>
-      <div id="projects-grid" class="grid"></div>
-    </section>
-
-    <!-- CONTATTI PAGE -->
-    <section id="page-contact" class="page">
-      <div class="form-container">
-        <h2 style="color: var(--text-heading); margin-bottom: 1rem;">Contatta Infonazionale</h2>
-        <div id="contact-alert" class="alert alert-success">Messaggio inviato con successo!</div>
-        <form id="form-contact">
-          <div class="form-group">
-            <label for="c-name">Nome intero</label>
-            <input type="text" id="c-name" class="form-control" required placeholder="Inserisci il tuo nome">
-          </div>
-          <div class="form-group">
-            <label for="c-msg">Messaggio</label>
-            <textarea id="c-msg" class="form-control" rows="4" required placeholder="Inserisci il tuo messaggio o suggerimento..."></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%;">Invia Messaggio</button>
-        </form>
-      </div>
-    </section>
-
-    <!-- ADMIN PAGE -->
-    <section id="page-admin" class="page">
-      <div id="admin-login" class="form-container">
-        <h2 style="color: var(--text-heading); margin-bottom: 1rem;">Accesso Admin Infonazionale</h2>
-        <div id="login-alert" class="alert alert-danger"></div>
-        <form id="form-login">
-          <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" class="form-control" required placeholder="admininfonazionale">
-          </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" class="form-control" required placeholder="••••">
-          </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%;">Accedi</button>
-        </form>
-      </div>
-
-      <div id="admin-dashboard" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-          <h1 style="color: var(--text-heading);">Pannello Admin - Infonazionale</h1>
-          <button id="btn-logout" class="btn btn-secondary">Logout</button>
-        </div>
-
-        <div class="card" style="margin-bottom: 2rem;">
-          <h3 style="color: var(--text-heading); margin-bottom: 0.5rem;">Stato Connessione HQ</h3>
-          <p id="hq-status" style="color: var(--success-color);">Connessione attiva con luxheadquarters.vercel.app</p>
-        </div>
-
-        <h3 style="color: var(--text-heading); margin-bottom: 1rem;">Messaggi Ricevuti</h3>
-        <div id="messages-list" class="grid"></div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    &copy; 2026 Infonazionale - L.U.X. Gruppo SLL
-  </footer>
+    <div id="result-box" class="result-area"></div>
+  </div>
 
   <script>
-    // Routing SPA
-    function handleRouting() {
-      const hash = window.location.hash || '#home';
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-
-      if (hash === '#projects') {
-        document.getElementById('page-projects').classList.add('active');
-        document.getElementById('nav-projects').classList.add('active');
-        fetchHQProjects();
-      } else if (hash === '#contact') {
-        document.getElementById('page-contact').classList.add('active');
-        document.getElementById('nav-contact').classList.add('active');
-      } else if (hash === '#admin') {
-        document.getElementById('page-admin').classList.add('active');
-        document.getElementById('nav-admin').classList.add('active');
-        checkAdminAuth();
-      } else {
-        document.getElementById('page-home').classList.add('active');
-        document.getElementById('nav-home').classList.add('active');
-      }
+    function handleSearch() {
+      const q = document.getElementById('query-input').value.trim();
+      const res = document.getElementById('result-box');
+      if (!q) return;
+      res.style.display = 'block';
+      res.innerHTML = `<strong>Risposta AI:</strong> Generazione della risposta per "<em>${q}</em>" in corso...`;
     }
+  </script>
 
-    window.addEventListener('hashchange', handleRouting);
+  <!-- SYSTEM CONTROL L.U.X. HQ - CONTROLLO STATO -->
+  <script>
+  (function() {
+    const CURRENT_SITE_ID = "infonazionale";
+    const HQ_API_URL = "https://luxheadquarters.vercel.app/api/projects";
 
-    // Chiamata IA tramite Proxy Serverless
-    document.getElementById('search-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const query = document.getElementById('search-query').value.trim();
-      const responseBox = document.getElementById('ai-response');
-      const btnSearch = document.getElementById('btn-search');
+    const STATUS_CONFIG = {
+      "in_lavorazione": {
+        emoji: "🟡",
+        title: "Sito in Lavorazione",
+        message: "Questo servizio è attualmente in fase di sviluppo da parte del team L.U.X."
+      },
+      "in_manutenzione": {
+        emoji: "🟠",
+        title: "In Manutenzione",
+        message: "Il sito è temporaneamente offline per interventi di manutenzione programmata."
+      },
+      "in_aggiornamento": {
+        emoji: "🔵",
+        title: "Aggiornamento in Corso",
+        message: "Stiamo applicando importanti aggiornamenti di sistema per migliorare l'esperienza."
+      }
+    };
 
-      if (!query) return;
-
-      responseBox.style.display = 'block';
-      responseBox.innerHTML = '⏳ Elaborazione risposta in corso con Groq AI...';
-      btnSearch.disabled = true;
-
+    async function checkSiteStatus() {
       try {
-        const res = await fetch('/api/proxy', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt: query })
-        });
+        const response = await fetch(`${HQ_API_URL}?t=${Date.now()}`);
+        if (!response.ok) return;
 
-        const data = await res.json();
+        const projects = await response.json();
+        const mySite = projects.find(p => p.id === CURRENT_SITE_ID);
 
-        if (res.ok && data.result) {
-          responseBox.innerText = data.result;
-        } else {
-          responseBox.innerText = '❌ Errore durante il recupero delle informazioni: ' + (data.error || 'Risposta non valida.');
+        if (mySite && mySite.status && mySite.status !== 'attivo') {
+          const config = STATUS_CONFIG[mySite.status] || {
+            emoji: "🔴",
+            title: "Servizio Disattivato",
+            message: "Il servizio è temporaneamente non disponibile."
+          };
+          renderOfflineOverlay(mySite.name, config);
         }
       } catch (err) {
-        responseBox.innerText = '❌ Errore di rete o server non raggiungibile.';
-      } finally {
-        btnSearch.disabled = false;
-      }
-    });
-
-    // Fetch Progetti HQ
-    async function fetchHQProjects() {
-      const container = document.getElementById('projects-grid');
-      container.innerHTML = '<p style="color: var(--text-muted);">Caricamento progetti dall HQ...</p>';
-      try {
-        const res = await fetch('https://luxheadquarters.vercel.app/data/projects.json');
-        if (!res.ok) throw new Error('Impossibile recuperare i dati HQ');
-        const projects = await res.json();
-
-        container.innerHTML = projects.map(p => `
-          <div class="card">
-            <h3 style="color: var(--text-heading); margin-bottom: 0.5rem;">${p.name}</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">${p.description}</p>
-            <a href="${p.url}" target="_blank" style="color: var(--accent-color); text-decoration: none; font-size: 0.85rem;">Apri Sito ↗</a>
-          </div>
-        `).join('');
-      } catch (err) {
-        container.innerHTML = '<p style="color: var(--danger-color);">Errore di connessione con il Quartier Generale.</p>';
+        console.warn("Impossibile verificare lo stato con l'HQ L.U.X.:", err);
       }
     }
 
-    // Gestione Form Contatti
-    document.getElementById('form-contact').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const name = document.getElementById('c-name').value;
-      const msg = document.getElementById('c-msg').value;
+    function renderOfflineOverlay(siteName, config) {
+      if (document.getElementById('lux-status-modal')) return;
 
-      const newMsg = { name, msg, date: new Date().toLocaleString() };
-      const msgs = JSON.parse(localStorage.getItem('infonazionale_messages') || '[]');
-      msgs.push(newMsg);
-      localStorage.setItem('infonazionale_messages', JSON.stringify(msgs));
+      const overlay = document.createElement('div');
+      overlay.id = 'lux-status-modal';
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        background-color: rgba(10, 10, 12, 0.96);
+        backdrop-filter: blur(12px);
+        z-index: 999999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        color: #ffffff;
+        padding: 20px;
+        box-sizing: border-box;
+      `;
 
-      document.getElementById('contact-alert').style.display = 'block';
-      e.target.reset();
-      setTimeout(() => { document.getElementById('contact-alert').style.display = 'none'; }, 3000);
-    });
-
-    // Login Admin via API
-    document.getElementById('form-login').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const alertBox = document.getElementById('login-alert');
-      alertBox.style.display = 'none';
-
-      const usernameInput = document.getElementById('username').value;
-      const passwordInput = document.getElementById('password').value;
-
-      try {
-        const res = await fetch('/api/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: usernameInput, password: passwordInput })
-        });
-        const data = await res.json();
-
-        if (res.ok && data.success) {
-          sessionStorage.setItem('infonazionale_token', data.token);
-          checkAdminAuth();
-        } else {
-          alertBox.innerText = data.message || "Credenziali errate.";
-          alertBox.style.display = 'block';
-        }
-      } catch (err) {
-        alertBox.innerText = "Errore durante il login.";
-        alertBox.style.display = 'block';
-      }
-    });
-
-    function checkAdminAuth() {
-      const token = sessionStorage.getItem('infonazionale_token');
-      if (token) {
-        document.getElementById('admin-login').style.display = 'none';
-        document.getElementById('admin-dashboard').style.display = 'block';
-        loadAdminMessages();
-      } else {
-        document.getElementById('admin-login').style.display = 'block';
-        document.getElementById('admin-dashboard').style.display = 'none';
-      }
-    }
-
-    function loadAdminMessages() {
-      const msgs = JSON.parse(localStorage.getItem('infonazionale_messages') || '[]');
-      const container = document.getElementById('messages-list');
-      if (msgs.length === 0) {
-        container.innerHTML = '<p style="color: var(--text-muted);">Nessun messaggio ricevuto.</p>';
-        return;
-      }
-      container.innerHTML = msgs.map(m => `
-        <div class="card">
-          <strong style="color: var(--text-heading);">${m.name}</strong>
-          <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.5rem;">${m.date}</span>
-          <p style="color: var(--text-main); font-size: 0.9rem;">${m.msg}</p>
+      overlay.innerHTML = `
+        <div style="
+          background: #18181c;
+          border: 1px solid #2e2e38;
+          border-radius: 20px;
+          padding: 36px 28px;
+          max-width: 440px;
+          width: 100%;
+          text-align: center;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        ">
+          <div style="font-size: 52px; margin-bottom: 16px;">${config.emoji}</div>
+          <h2 style="margin: 0 0 10px 0; font-size: 1.6rem; font-weight: 700; color: #ffffff;">${config.title}</h2>
+          <p style="color: #a1a1aa; line-height: 1.5; margin: 0 0 24px 0; font-size: 0.95rem;">
+            <strong>${siteName}</strong>: ${config.message}
+          </p>
+          <a href="https://luxheadquarters.vercel.app" style="
+            display: inline-block;
+            width: 100%;
+            padding: 14px 20px;
+            background: #3b82f6;
+            color: #ffffff;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 10px;
+            box-sizing: border-box;
+            transition: background 0.2s ease;
+          " onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#3b82f6'">
+            Vai al Quartier Generale ↗
+          </a>
         </div>
-      `).join('');
+      `;
+
+      document.body.appendChild(overlay);
+      document.body.style.overflow = 'hidden';
     }
 
-    document.getElementById('btn-logout').addEventListener('click', () => {
-      sessionStorage.removeItem('infonazionale_token');
-      checkAdminAuth();
-    });
-
-    window.addEventListener('DOMContentLoaded', handleRouting);
+    checkSiteStatus();
+  })();
   </script>
 </body>
 </html>
