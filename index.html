@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Infonazionale - Motore di ricerca AI per la scuola. Poni una domanda e ottieni una risposta chiara e dettagliata.">
     <title>Infonazionale - Ricerca scolastica AI</title>
-    <!-- Caricamento forzato di marked.js (senza defer) -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         :root {
@@ -148,7 +147,6 @@
             color: var(--muted);
         }
 
-        /* --- BOX DELLA RISPOSTA (Elegante e con bordo) --- */
         .result-area {
             margin-top: 30px;
             max-width: 800px;
@@ -169,7 +167,6 @@
         .response-box ul, .response-box ol { padding-left: 1.5rem; margin: 1rem 0; }
         .response-box li { margin-bottom: 0.3rem; }
         .response-box a { color: var(--primary); text-decoration: underline; }
-        .response-box .sources-title { margin-top: 2rem; font-weight: 700; color: #93c5fd; }
 
         .about-grid, .contact-grid {
             display: grid;
@@ -552,10 +549,8 @@
                     throw new Error("La risposta dell'IA è vuota.");
                 }
 
-                // Converti il Markdown in HTML
                 const formattedHtml = marked.parse(fullText);
 
-                // Crea il box della risposta
                 const box = document.createElement('div');
                 box.className = 'response-box';
                 box.innerHTML = formattedHtml;
@@ -623,7 +618,7 @@
             else showAdminLogin();
         }
 
-        // --- ADMIN LOGIN (DEMO - Password in chiaro visibile, ma è solo dimostrativa) ---
+        // --- ADMIN LOGIN (DEMO) ---
         const ADMIN_USER = 'admininfonazionale';
         const ADMIN_PASS = '5643';
 
