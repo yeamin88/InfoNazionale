@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Infonazionale - Motore di ricerca AI per la scuola. Poni una domanda e ottieni una risposta chiara e dettagliata.">
+    <title>Infonazionale - Ricerca scolastica AI</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --bg-secondary: #1e293b;
+            --card: #1e293b;
+            --border: #334155;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --success: #22c55e;
+            --danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Inter, system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at top, #1e293b 0, var(--bg) 45%);
+            color: var(--text);
+        }
+        a { color: inherit; }
+        button, input, textarea { font: inherit; }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(15, 23, 42, 0.92);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+        }
+        .nav-container {
+            width: min(1100px, calc(100% - 32px));
+            margin: 0 auto;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+        .nav-brand {
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            padding: 9px 12px;
+            border-radius: 8px;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: white;
+            background: #25253d;
+        }
+
+        .main-content {
+            width: min(1100px, calc(100% - 32px));
+            margin: 0 auto;
+            min-height: calc(100vh - 150px);
+            padding: 70px 0;
+        }
+        .section { animation: fadeIn 0.25s ease; }
+        .section[hidden] { display: none !important; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 { margin-top: 0; margin-bottom: 30px; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.05; }
+        h3 { margin-top: 0; }
+
+        .hero {
+            min-height: 65vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .hero h1 { margin-bottom: 15px; }
+        .hero-sub {
+            color: var(--muted);
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
+        .search-wrapper {
+            width: 100%;
+            max-width: 600px;
+        }
+        .search-wrapper form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .search-wrapper input {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--card);
+            color: white;
+            outline: none;
+        }
+        .search-wrapper input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        .search-wrapper input::placeholder { color: #77778f; }
+        .search-wrapper button {
+            border: 0;
+            border-radius: 10px;
+            padding: 12px 18px;
+            background: var(--primary);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .search-wrapper button:hover { background: var(--primary-hover); }
+
+        .loading-indicator {
+            margin-top: 20px;
+            color: var(--muted);
+        }
+        .result-area {
+            margin-top: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .about-grid, .contact-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 30px;
+            align-items: start;
+        }
+        .about-grid img, .contact-grid > img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+        .about-grid p { color: var(--muted); line-height: 1.7; }
+
+        form { display: flex; flex-direction: column; gap: 14px; }
+        input, textarea {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--card);
+            color: white;
+            outline: none;
+            resize: vertical;
+        }
+        input:focus, textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        input::placeholder, textarea::placeholder { color: #77778f; }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .project-card {
+            display: flex;
+            flex-direction: column;
+            padding: 22px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: var(--card);
+        }
+        .project-card p { flex: 1; color: var(--muted); line-height: 1.6; }
+
+        button[type="submit"], .project-btn {
+            border: 0;
+            border-radius: 10px;
+            padding: 12px 18px;
+            background: var(--primary);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.2s ease;
+        }
+        button[type="submit"]:hover, .project-btn:hover { background: var(--primary-hover); }
+
+        .form-feedback {
+            margin-top: 15px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #86efac;
+        }
+
+        .login-box {
+            width: min(420px, 100%);
+            margin: 0 auto;
+            padding: 25px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: var(--card);
+        }
+        .login-box h3 { text-align: center; }
+        .login-error {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 10px;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .admin-card { min-width: 0; }
+        .hq-status {
+            padding: 1rem;
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        .online { color: var(--success); }
+        .offline { color: var(--danger); }
+        .message-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .message-box {
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--card);
+        }
+        .message-box strong { color: #93c5fd; }
+        .message-box small { display: block; margin-top: 5px; color: #77778f; }
+        .message-box p { margin-bottom: 0; color: var(--muted); white-space: pre-wrap; overflow-wrap: anywhere; }
+        .logout-btn {
+            margin-top: 25px;
+            background: #991b1b;
+            border: 0;
+            border-radius: 10px;
+            padding: 12px 18px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .logout-btn:hover { background: #7f1d1d; }
+
+        .footer {
+            padding: 30px 16px;
+            text-align: center;
+            color: #77778f;
+            border-top: 1px solid var(--border);
+        }
+        .footer p { margin: 6px 0; }
+        .footer a { color: #93c5fd; }
+
+        .empty-state {
+            padding: 25px;
+            text-align: center;
+            color: var(--muted);
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+        }
+        .loading { color: var(--muted); text-align: center; }
+
+        @media (max-width: 750px) {
+            .nav-container { flex-direction: column; justify-content: center; padding: 14px 0; }
+            .nav-links { justify-content: center; }
+            .main-content { padding: 45px 0; }
+            .about-grid, .contact-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" aria-label="Navigazione principale">
+        <div class="nav-container">
+            <a href="#home" class="nav-brand" data-section="home">
+                <span>📰 Infonazionale</span>
+            </a>
+            <div class="nav-links">
+                <a href="#home" data-section="home">Home</a>
+                <a href="#chi-siamo" data-section="chi-siamo">Chi Siamo</a>
+                <a href="#progetti" data-section="progetti">Progetti</a>
+                <a href="#contattaci" data-section="contattaci">Contattaci</a>
+                <a href="#admin" data-section="admin">🔐 Admin</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- HOME -->
+        <section id="section-home" class="section" aria-labelledby="home-title">
+            <div class="hero">
+                <h1 id="home-title">L'informazione che ti serve, <span style="color: var(--primary);">in una risposta.</span></h1>
+                <p class="hero-sub">Poni una domanda su qualsiasi argomento scolastico. L'IA ti risponde con chiarezza e fonti.</p>
+                
+                <div class="search-wrapper">
+                    <form id="searchForm">
+                        <input type="text" id="query" placeholder="Es. Spiegami la Rivoluzione Francese..." required>
+                        <button type="submit">Cerca</button>
+                    </form>
+                    <div id="loadingIndicator" class="loading-indicator" hidden>L'IA sta cercando la risposta...</div>
+                    <div id="resultArea" class="result-area"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CHI SIAMO -->
+        <section id="section-chi-siamo" class="section" hidden aria-labelledby="about-title">
+            <h1 id="about-title">Chi Siamo</h1>
+            <div class="about-grid">
+                <img src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=800&h=600&fit=crop&auto=format" alt="Team di persone" loading="lazy">
+                <div>
+                    <p><strong>Infonazionale</strong> è un progetto dedicato agli studenti.</p>
+                    <p>Il nostro obiettivo è rendere la ricerca scolastica più veloce e accessibile, usando l'intelligenza artificiale per fornire risposte chiare, strutturate e con fonti affidabili.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROGETTI -->
+        <section id="section-progetti" class="section" hidden aria-labelledby="projects-title">
+            <h1 id="projects-title">I Nostri Progetti</h1>
+            <div id="projectList" class="project-grid">
+                <p class="loading">Caricamento progetti...</p>
+            </div>
+        </section>
+
+        <!-- CONTATTACI -->
+        <section id="section-contattaci" class="section" hidden aria-labelledby="contact-title">
+            <h1 id="contact-title">Contattaci</h1>
+            <div class="contact-grid">
+                <img src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=800&h=600&fit=crop&auto=format" alt="Contatti" loading="lazy">
+                <div>
+                    <form id="contactForm" novalidate>
+                        <label for="contactName">Nome</label>
+                        <input type="text" id="contactName" name="name" placeholder="Nome" autocomplete="name" required>
+                        <label for="contactEmail">Email</label>
+                        <input type="email" id="contactEmail" name="email" placeholder="Email" autocomplete="email" required>
+                        <label for="contactMessage">Messaggio</label>
+                        <textarea id="contactMessage" name="message" rows="5" placeholder="Scrivici un messaggio..." required></textarea>
+                        <button type="submit">Invia Messaggio</button>
+                    </form>
+                    <div id="formFeedback" class="form-feedback" role="status" aria-live="polite" hidden>✅ Messaggio salvato!</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADMIN -->
+        <section id="section-admin" class="section" hidden aria-labelledby="admin-title">
+            <h1 id="admin-title">📊 Pannello di Amministrazione</h1>
+            
+            <div id="adminLogin">
+                <div class="login-box">
+                    <h3>Accesso Amministratore</h3>
+                    <form id="loginForm">
+                        <label for="adminUser">Username</label>
+                        <input type="text" id="adminUser" placeholder="Username" autocomplete="username" required>
+                        <label for="adminPass">Password</label>
+                        <input type="password" id="adminPass" placeholder="Password" autocomplete="current-password" required>
+                        <button type="submit">Accedi</button>
+                    </form>
+                    <div id="loginError" class="login-error" role="alert" hidden>❌ Credenziali errate</div>
+                </div>
+            </div>
+
+            <div id="adminPanel" hidden>
+                <div class="admin-grid">
+                    <div class="admin-card">
+                        <h3>📡 Stato HQ</h3>
+                        <div id="hqStatus" class="hq-status" aria-live="polite">Caricamento...</div>
+                    </div>
+                    <div class="admin-card">
+                        <h3>📩 Messaggi Ricevuti</h3>
+                        <div id="messageList" class="message-list">
+                            <div class="empty-state">Nessun messaggio ricevuto.</div>
+                        </div>
+                    </div>
+                </div>
+                <button id="logoutBtn" type="button" class="logout-btn">🚪 Logout</button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 Infonazionale. La conoscenza a portata di IA.</p>
+        <p>Gestito da <a href="https://luxheadquarters.vercel.app" target="_blank" rel="noopener noreferrer">L.U.X. Gruppo SLL</a></p>
+    </footer>
+
+    <script>
+        "use strict";
+
+        const CONFIG = {
+            HQ_URL: "https://luxheadquarters.vercel.app",
+            PROJECTS_URL: "https://luxheadquarters.vercel.app/data/projects.json",
+            ADMIN_USER: "admininfonazionale",
+            ADMIN_PASS: "5643",
+            STORAGE_MESSAGES: "infonazionale_messages",
+            STORAGE_LOGIN: "infonazionale_admin_logged"
+        };
+
+        function getElement(id) { return document.getElementById(id); }
+        function escapeStorageData(value) { return typeof value === "string" ? value.trim() : ""; }
+
+        function readMessagesFromStorage() {
+            const saved = localStorage.getItem(CONFIG.STORAGE_MESSAGES);
+            if (!saved) return [];
+            try {
+                const parsed = JSON.parse(saved);
+                return Array.isArray(parsed) ? parsed : [];
+            } catch { return []; }
+        }
+
+        function saveMessagesToStorage(messages) {
+            try {
+                localStorage.setItem(CONFIG.STORAGE_MESSAGES, JSON.stringify(messages));
+                return true;
+            } catch { return false; }
+        }
+
+        function isValidHttpUrl(value) {
+            try {
+                const url = new URL(value);
+                return url.protocol === "http:" || url.protocol === "https:";
+            } catch { return false; }
+        }
+
+        const sections = document.querySelectorAll(".section");
+        const navLinks = document.querySelectorAll(".nav-links a, .nav-brand");
+
+        function showSection(id, updateHash = true) {
+            const target = getElement("section-" + id);
+            if (!target) return;
+            sections.forEach(s => s.hidden = s !== target);
+            navLinks.forEach(link => {
+                const active = link.dataset.section === id;
+                link.classList.toggle("active", active);
+                if (active) link.setAttribute("aria-current", "page");
+                else link.removeAttribute("aria-current");
+            });
+            if (updateHash) history.replaceState(null, "", "#" + id);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            if (id === "admin") restoreAdminSession();
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener("click", e => {
+                e.preventDefault();
+                const id = link.dataset.section;
+                if (id) showSection(id);
+            });
+        });
+
+        function initializeNavigation() {
+            const hash = window.location.hash.replace("#", "").trim();
+            const valid = ["home", "chi-siamo", "progetti", "contattaci", "admin"];
+            if (valid.includes(hash)) showSection(hash, false);
+            else showSection("home", false);
+        }
+
+        // --- RICERCA AI (chiamata al proxy interno) ---
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const query = document.getElementById('query').value;
+            const loading = document.getElementById('loadingIndicator');
+            const result = document.getElementById('resultArea');
+
+            if (!query.trim()) return;
+            loading.hidden = false;
+            result.innerHTML = '';
+
+            try {
+                const resp = await fetch('/api/proxy', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        messages: [
+                            { role: 'system', content: "Sei Infonazionale, un assistente scolastico. Rispondi in italiano in modo chiaro, dettagliato e con fonti." },
+                            { role: 'user', content: query }
+                        ]
+                    })
+                });
+                if (!resp.ok) throw new Error('Errore server');
+                const data = await resp.json();
+                const fullText = data.choices[0].message.content;
+                const formatted = fullText.replace(/\n/g, '<br>');
+                result.innerHTML = `<p>${formatted}</p>`;
+            } catch (err) {
+                result.innerHTML = `<p style="color: #ef4444;">❌ ${err.message}</p>`;
+            }
+            loading.hidden = true;
+        });
+
+        // --- CONTATTI ---
+        document.getElementById('contactForm').addEventListener('submit', e => {
+            e.preventDefault();
+            if (!e.target.checkValidity()) { e.target.reportValidity(); return; }
+            const name = escapeStorageData(getElement('contactName').value);
+            const email = escapeStorageData(getElement('contactEmail').value);
+            const message = escapeStorageData(getElement('contactMessage').value);
+            if (!name || !email || !message) {
+                document.getElementById('formFeedback').textContent = '❌ Compila tutti i campi.';
+                document.getElementById('formFeedback').hidden = false;
+                return;
+            }
+            const newMessage = { nome: name, email: email, messaggio: message, data: new Date().toLocaleString('it-IT') };
+            const messages = readMessagesFromStorage();
+            messages.push(newMessage);
+            if (!saveMessagesToStorage(messages)) {
+                document.getElementById('formFeedback').textContent = '❌ Impossibile salvare il messaggio.';
+                document.getElementById('formFeedback').hidden = false;
+                return;
+            }
+            document.getElementById('formFeedback').textContent = '✅ Messaggio salvato!';
+            document.getElementById('formFeedback').hidden = false;
+            e.target.reset();
+            setTimeout(() => document.getElementById('formFeedback').hidden = true, 3000);
+        });
+
+        // --- ADMIN ---
+        function setAdminLoggedIn(value) {
+            if (value) sessionStorage.setItem(CONFIG.STORAGE_LOGIN, "true");
+            else sessionStorage.removeItem(CONFIG.STORAGE_LOGIN);
+        }
+        function isAdminLoggedIn() { return sessionStorage.getItem(CONFIG.STORAGE_LOGIN) === "true"; }
+        function showAdminPanel() {
+            document.getElementById('adminLogin').hidden = true;
+            document.getElementById('adminPanel').hidden = false;
+            document.getElementById('loginError').hidden = true;
+            loadMessages();
+            checkHQStatus();
+        }
+        function showAdminLogin() {
+            document.getElementById('adminLogin').hidden = false;
+            document.getElementById('adminPanel').hidden = true;
+        }
+        function restoreAdminSession() {
+            if (isAdminLoggedIn()) showAdminPanel();
+            else showAdminLogin();
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const user = getElement('adminUser').value.trim();
+            const pass = getElement('adminPass').value;
+            if (user === CONFIG.ADMIN_USER && pass === CONFIG.ADMIN_PASS) {
+                setAdminLoggedIn(true);
+                showAdminPanel();
+                e.target.reset();
+            } else {
+                document.getElementById('loginError').hidden = false;
+            }
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            setAdminLoggedIn(false);
+            showAdminLogin();
+            document.getElementById('loginForm').reset();
+        });
+
+        function loadMessages() {
+            const list = getElement('messageList');
+            const messages = readMessagesFromStorage();
+            list.replaceChildren();
+            if (messages.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'empty-state';
+                empty.textContent = 'Nessun messaggio ricevuto.';
+                list.appendChild(empty);
+                return;
+            }
+            [...messages].reverse().forEach(m => {
+                const box = document.createElement('div');
+                box.className = 'message-box';
+                const header = document.createElement('div');
+                const strong = document.createElement('strong');
+                strong.textContent = m.nome || 'Senza nome';
+                const email = document.createTextNode(` (${m.email || 'Email non disponibile'})`);
+                header.appendChild(strong);
+                header.appendChild(email);
+                const date = document.createElement('small');
+                date.textContent = m.data || '';
+                const text = document.createElement('p');
+                text.textContent = m.messaggio || '';
+                box.appendChild(header);
+                box.appendChild(date);
+                box.appendChild(text);
+                list.appendChild(box);
+            });
+        }
+
+        async function checkHQStatus() {
+            const el = getElement('hqStatus');
+            el.textContent = 'Controllo connessione...';
+            el.className = 'hq-status';
+            try {
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 8000);
+                const response = await fetch(CONFIG.HQ_URL, { method: 'GET', cache: 'no-store', signal: controller.signal });
+                clearTimeout(timeout);
+                if (response.ok) {
+                    el.textContent = '✅ HQ Online';
+                    el.classList.add('online');
+                } else {
+                    el.textContent = '❌ HQ Offline';
+                    el.classList.add('offline');
+                }
+            } catch {
+                el.textContent = '❌ HQ Offline';
+                el.classList.add('offline');
+            }
+        }
+
+        async function loadProjects() {
+            const container = getElement('projectList');
+            try {
+                const response = await fetch(CONFIG.PROJECTS_URL, { method: 'GET', cache: 'no-store' });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const projects = await response.json();
+                if (!Array.isArray(projects)) throw new Error('Formato non valido');
+                container.replaceChildren();
+                if (projects.length === 0) {
+                    const empty = document.createElement('div');
+                    empty.className = 'empty-state';
+                    empty.textContent = 'Nessun progetto disponibile.';
+                    container.appendChild(empty);
+                    return;
+                }
+                projects.forEach(p => {
+                    const card = document.createElement('article');
+                    card.className = 'project-card';
+                    const title = document.createElement('h3');
+                    title.textContent = p.nome || 'Progetto senza nome';
+                    const desc = document.createElement('p');
+                    desc.textContent = p.descrizione || 'Nessuna descrizione disponibile.';
+                    card.appendChild(title);
+                    card.appendChild(desc);
+                    if (p.url && isValidHttpUrl(p.url)) {
+                        const link = document.createElement('a');
+                        link.href = p.url;
+                        link.target = '_blank';
+                        link.rel = 'noopener noreferrer';
+                        link.className = 'project-btn';
+                        link.textContent = 'Visita →';
+                        card.appendChild(link);
+                    }
+                    container.appendChild(card);
+                });
+            } catch {
+                container.replaceChildren();
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'empty-state';
+                errorMsg.textContent = 'Nessun progetto disponibile al momento.';
+                container.appendChild(errorMsg);
+            }
+        }
+
+        initializeNavigation();
+        loadProjects();
+    </script>
+</body>
+</html>
