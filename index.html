@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Infonazionale - Motore di ricerca AI per la scuola. Poni una domanda e ottieni una risposta chiara e dettagliata.">
     <title>Infonazionale - Ricerca scolastica AI</title>
-    <!-- Libreria per convertire Markdown in HTML -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+    <!-- Caricamento forzato di marked.js (senza defer) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         :root {
             --bg: #0f172a;
@@ -157,11 +157,12 @@
         }
         .response-box {
             background: var(--response-bg);
-            border: 1px solid var(--response-border);
+            border: 2px solid var(--response-border);
             border-radius: 16px;
             padding: 25px 30px;
             text-align: left;
             line-height: 1.8;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
         .response-box strong { color: #c4b5fd; font-weight: 700; }
         .response-box p { margin: 0 0 1rem 0; color: var(--text); }
@@ -551,13 +552,12 @@
                     throw new Error("La risposta dell'IA è vuota.");
                 }
 
-                // Converti il Markdown in HTML usando la libreria marked
+                // Converti il Markdown in HTML
                 const formattedHtml = marked.parse(fullText);
 
-                // Crea un box sicuro (NON innerHTML, usiamo DOM)
+                // Crea il box della risposta
                 const box = document.createElement('div');
                 box.className = 'response-box';
-                // marked restituisce HTML sicuro, ma lo inseriamo con innerHTML solo perché marked genera HTML statico controllato
                 box.innerHTML = formattedHtml;
 
                 resultArea.appendChild(box);
