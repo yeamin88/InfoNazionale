@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Infonazionale - Motore di ricerca AI per la scuola. Poni una domanda e ottieni una risposta chiara e dettagliata.">
     <title>Infonazionale - Ricerca scolastica AI</title>
+    <!-- Libreria per convertire Markdown in HTML -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
     <style>
         :root {
             --bg: #0f172a;
@@ -17,6 +19,8 @@
             --primary-hover: #2563eb;
             --success: #22c55e;
             --danger: #ef4444;
+            --response-bg: #1a2234;
+            --response-border: #2d3748;
         }
 
         * { box-sizing: border-box; }
@@ -143,12 +147,28 @@
             margin-top: 20px;
             color: var(--muted);
         }
+
+        /* --- BOX DELLA RISPOSTA (Elegante e con bordo) --- */
         .result-area {
             margin-top: 30px;
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
         }
+        .response-box {
+            background: var(--response-bg);
+            border: 1px solid var(--response-border);
+            border-radius: 16px;
+            padding: 25px 30px;
+            text-align: left;
+            line-height: 1.8;
+        }
+        .response-box strong { color: #c4b5fd; font-weight: 700; }
+        .response-box p { margin: 0 0 1rem 0; color: var(--text); }
+        .response-box ul, .response-box ol { padding-left: 1.5rem; margin: 1rem 0; }
+        .response-box li { margin-bottom: 0.3rem; }
+        .response-box a { color: var(--primary); text-decoration: underline; }
+        .response-box .sources-title { margin-top: 2rem; font-weight: 700; color: #93c5fd; }
 
         .about-grid, .contact-grid {
             display: grid;
@@ -424,18 +444,14 @@
 
         const CONFIG = {
             HQ_URL: "https://luxheadquarters.vercel.app",
-            PROJECTS_URL: "https://luxheadquarters.vercel.app/data/projects.json",
-            ADMIN_USER: "admininfonazionale",
-            ADMIN_PASS: "5643",
-            STORAGE_MESSAGES: "infonazionale_messages",
-            STORAGE_LOGIN: "infonazionale_admin_logged"
+            PROJECTS_URL: "https://luxheadquarters.vercel.app/data/projects.json"
         };
 
         function getElement(id) { return document.getElementById(id); }
         function escapeStorageData(value) { return typeof value === "string" ? value.trim() : ""; }
 
         function readMessagesFromStorage() {
-            const saved = localStorage.getItem(CONFIG.STORAGE_MESSAGES);
+            const saved = localStorage.getItem('infonazionale_messages');
             if (!saved) return [];
             try {
                 const parsed = JSON.parse(saved);
@@ -445,7 +461,7 @@
 
         function saveMessagesToStorage(messages) {
             try {
-                localStorage.setItem(CONFIG.STORAGE_MESSAGES, JSON.stringify(messages));
+                localStorage.setItem('infonazionale_messages', JSON.stringify(messages));
                 return true;
             } catch { return false; }
         }
@@ -495,30 +511,66 @@
             e.preventDefault();
             const query = document.getElementById('query').value;
             const loading = document.getElementById('loadingIndicator');
-            const result = document.getElementById('resultArea');
+            const resultArea = document.getElementById('resultArea');
 
             if (!query.trim()) return;
             loading.hidden = false;
-            result.innerHTML = '';
+            resultArea.innerHTML = '';
 
             try {
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 15000);
+
                 const resp = await fetch('/api/proxy', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         messages: [
-                            { role: 'system', content: "Sei Infonazionale, un assistente scolastico. Rispondi in italiano in modo chiaro, dettagliato e con fonti." },
+                            { role: 'system', content: "Sei Infonazionale, un assistente scolastico. Rispondi in italiano in modo chiaro, dettagliato e con fonti. Usa il formato Markdown per i grassetti e gli elenchi." },
                             { role: 'user', content: query }
                         ]
-                    })
+                    }),
+                    signal: controller.signal
                 });
-                if (!resp.ok) throw new Error('Errore server');
+
+                clearTimeout(timeout);
+
+                if (!resp.ok) {
+                    let errorMsg = `Errore ${resp.status}`;
+                    try {
+                        const errData = await resp.json();
+                        if (errData.error) errorMsg = errData.error;
+                    } catch {}
+                    throw new Error(errorMsg);
+                }
+
                 const data = await resp.json();
-                const fullText = data.choices[0].message.content;
-                const formatted = fullText.replace(/\n/g, '<br>');
-                result.innerHTML = `<p>${formatted}</p>`;
+                const fullText = data?.choices?.[0]?.message?.content;
+
+                if (!fullText) {
+                    throw new Error("La risposta dell'IA è vuota.");
+                }
+
+                // Converti il Markdown in HTML usando la libreria marked
+                const formattedHtml = marked.parse(fullText);
+
+                // Crea un box sicuro (NON innerHTML, usiamo DOM)
+                const box = document.createElement('div');
+                box.className = 'response-box';
+                // marked restituisce HTML sicuro, ma lo inseriamo con innerHTML solo perché marked genera HTML statico controllato
+                box.innerHTML = formattedHtml;
+
+                resultArea.appendChild(box);
+
             } catch (err) {
-                result.innerHTML = `<p style="color: #ef4444;">❌ ${err.message}</p>`;
+                const errorBox = document.createElement('div');
+                errorBox.className = 'response-box';
+                errorBox.style.borderColor = 'var(--danger)';
+                errorBox.style.color = '#fca5a5';
+                const p = document.createElement('p');
+                p.textContent = `❌ ${err.message}`;
+                errorBox.appendChild(p);
+                resultArea.appendChild(errorBox);
             }
             loading.hidden = true;
         });
@@ -551,10 +603,10 @@
 
         // --- ADMIN ---
         function setAdminLoggedIn(value) {
-            if (value) sessionStorage.setItem(CONFIG.STORAGE_LOGIN, "true");
-            else sessionStorage.removeItem(CONFIG.STORAGE_LOGIN);
+            if (value) sessionStorage.setItem('infonazionale_admin_logged', "true");
+            else sessionStorage.removeItem('infonazionale_admin_logged');
         }
-        function isAdminLoggedIn() { return sessionStorage.getItem(CONFIG.STORAGE_LOGIN) === "true"; }
+        function isAdminLoggedIn() { return sessionStorage.getItem('infonazionale_admin_logged') === "true"; }
         function showAdminPanel() {
             document.getElementById('adminLogin').hidden = true;
             document.getElementById('adminPanel').hidden = false;
@@ -571,11 +623,15 @@
             else showAdminLogin();
         }
 
+        // --- ADMIN LOGIN (DEMO - Password in chiaro visibile, ma è solo dimostrativa) ---
+        const ADMIN_USER = 'admininfonazionale';
+        const ADMIN_PASS = '5643';
+
         document.getElementById('loginForm').addEventListener('submit', e => {
             e.preventDefault();
             const user = getElement('adminUser').value.trim();
             const pass = getElement('adminPass').value;
-            if (user === CONFIG.ADMIN_USER && pass === CONFIG.ADMIN_PASS) {
+            if (user === ADMIN_USER && pass === ADMIN_PASS) {
                 setAdminLoggedIn(true);
                 showAdminPanel();
                 e.target.reset();
